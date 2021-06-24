@@ -6,10 +6,11 @@
 *.lo
 *.o
 *.obj
-
+*.pdb
 # Precompiled Headers
 *.gch
 *.pch
+*.ipch
 
 # Compiled Dynamic libraries
 *.so
@@ -30,3 +31,29 @@
 *.exe
 *.out
 *.app
+
+#logs
+*.tlog
+
+
+#glm documentation
+zxengine-core/vendor/vendor/glm/doc/**
+zxengine-core/vendor/vendor/glm/test/**
+
+#visual studio
+zxengine-core/Debug/zxengine-core.vcxproj.FileListAbsolute.txt
+*.vcxproj
+zxengine-core.vcxproj.filters
+zxengine-user
+zxengine-core/zxengine/obj/Debug/zxengine-core.exe.recipe
+zxengine-core/zxengine/obj/Debug/zxengine-core.log
+zxengine-core/zxengine/zxengine-core.vcxproj.user
+zxengine-core/zxengine-core.vcxproj.user
+*.sln
+*.ilk
+*.opendb
+*.db-wal
+*.db-shm
+*.db
+.vs/zxengine/v16/.suo
+.vs/zxengine/config/applicationhost.config

@@ -1,0 +1,12 @@
+[
+  {
+    "directory": "C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/Ivendor \/ZI \/JMC \/nologo \/W3 \/WX- \/diagnostics:column \/Od \/Oy- \/D CODE_ANALYSIS \/D WIN32 \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/RTC1 \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"Debug\\\\\" \/Gd \/TP   \"C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core\\src\\main.cpp\"",
+    "file": "C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core\\src\\main.cpp"
+  },
+  {
+    "directory": "C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/Ivendor \/ZI \/JMC \/nologo \/W3 \/WX- \/diagnostics:column \/Od \/Oy- \/D CODE_ANALYSIS \/D WIN32 \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/RTC1 \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"Debug\\\\\" \/Gd \/TP   \"C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core\\src\\pch.cpp\"",
+    "file": "C:\\Dev\\Repo\\cpp\\zxengine\\zxengine-core\\src\\pch.cpp"
+  }
+]

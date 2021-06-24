@@ -1,0 +1,7 @@
+﻿  main.cpp
+  Generating code
+  321 of 1115 functions (28.8%) were compiled, the rest were copied from previous compilation.
+    254 functions were new in current compilation
+    107 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  zxengine-core.vcxproj -> C:\Dev\Repo\cpp\zxengine\Release\zxengine-core.exe
