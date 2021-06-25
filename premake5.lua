@@ -3,7 +3,7 @@
 workspace "zxengine"
 	architecture "x64"
 	targetdir "build"
-
+	startproject "sandbox"
 	configurations{
 		"Debug",
 		"Release",
@@ -14,4 +14,5 @@ workspace "zxengine"
 
 	include "zxengine-core"
 	include "glfw"
+	include "sandbox"
 

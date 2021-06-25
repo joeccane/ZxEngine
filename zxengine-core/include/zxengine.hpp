@@ -7,3 +7,5 @@
 #include "scene/behaviour.hpp"
 #include "system.hpp"
 #include "event.hpp"
+#include "window.hpp"
+#include "platform/windows/WindowsWindow.hpp"

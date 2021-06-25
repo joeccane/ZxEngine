@@ -24,3 +24,4 @@
 
 #include <vendor/glm/glm.hpp>
 #include <vendor/entt.hpp>
+#include <GLFW/glfw3.h>

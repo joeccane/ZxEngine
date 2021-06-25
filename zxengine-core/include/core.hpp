@@ -1,6 +1,6 @@
 #pragma once
 #include <type_traits>
-#include "vendor/entt.hpp"
+#include <vendor/entt.hpp>
 #include <memory_resource>
 #define zxIteratorFunctions(innerCollection)\
 	[[nodiscard]] auto begin() { return innerCollection.begin(); }\

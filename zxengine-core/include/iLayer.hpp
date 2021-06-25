@@ -32,7 +32,8 @@ namespace zx
 			pm_Enabled = false;
 			LayerDisbled();
 		}
-
+		virtual void LayerAdded() {}
+		virtual void LayerRemoved() {}
 		virtual void LayerEnabled() {}
 		virtual void LayerDisbled() {}
 	private:
@@ -78,7 +79,9 @@ namespace zx
 
 		iterator Add(T* value)
 		{
-			return pm_Layers.insert(value);
+			auto it = pm_Layers.insert(value);
+			LayerAdded(value);
+			return it;
 		}
 		bool Remove(T* value)
 		{
@@ -86,6 +89,8 @@ namespace zx
 			if (it == end())
 				return false;
 			pm_Layers.erase(it);
+
+			LayerRemoved(value);
 			return true;
 		}
 
@@ -101,6 +106,8 @@ namespace zx
 				pm_Layers.insert(layer);
 		}
 	protected:
+		virtual void LayerAdded(T* layer) {}
+		virtual void LayerRemoved(T* layer) {}
 		set pm_Layers;
 	};
 }

@@ -1,19 +1,9 @@
---zx core---------------------
-
-project "zxengine-core"
-	kind "StaticLib"
+project "sandbox"
+	kind "ConsoleApp"
 	cppdialect "C++20"
 	staticruntime "on"
 
-	pchheader "pch.hpp"
-	pchsource "pch.cpp"
-
 	files{
-
-		"pch.hpp",
-		"pch.cpp",
-
-
 		"include/**.h",
 		"include/**.hpp",
 		"include/**.c",
@@ -22,25 +12,18 @@ project "zxengine-core"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.c",
-		"src/**.cpp",
-
-		"vendor/vendor/entt.hpp",
-		"vendor/vendor/glm/vendor/**.h",
-		"vendor/vendor/glm/vendor/**.hpp",
-		"vendor/vendor/glm/vendor/**.c",
-		"vendor/vendor/glm/vendor/**.cpp",
-		"vendor/vendor/glm/vendor/**.inl"
-
+		"src/**.cpp"
 	}
+
 	includedirs{
-		"",
 		"include",
-		"vendor",
-		"vendor/vendor/glm",
-		"%{wks.location}/glfw/include"
+		"%{wks.location}/zxengine-core/include",
+		"%{wks.location}/zxengine-core/vendor/glm",
+		"%{wks.location}/zxengine-core/vendor",
+		"%{wks.location}/zxengine-core/vendor/vendor/glm",
 	}
 	links{
-		"glfw"
+		"zxengine-core"
 	}
 	filter "system:windows"
 		systemversion "latest"

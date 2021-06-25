@@ -4,6 +4,7 @@
 #include <utility>
 #include "gamephase.hpp"
 #include "scene/coms_vector.hpp"
+#include "math.hpp"
 namespace zx
 {
 	namespace detail
@@ -37,13 +38,13 @@ namespace zx
 		}
 
 		template<component_type T>
-		[[nodiscard]] bool HasComponent() noexcept
+		[[nodiscard]] inline bool HasComponent() noexcept
 		{
 			return pm_SceneReg->registry.try_get<T>(pm_ID) != nullptr;
 		}
 		[[nodiscard]] inline bool IsValid() noexcept { return pm_ID != entt::null && pm_PhaseID != entt::null; }
 
-		size_t CountChildren(bool recursive = false)
+		inline size_t CountChildren(bool recursive = false)
 		{
 			size_t count = 0;
 			count += children().size();
@@ -55,7 +56,7 @@ namespace zx
 			return count;
 		}
 		template<component_type T>
-		[[nodiscard]] coms_vector<T> GetComponentsInChildren(bool recursive = false)
+		[[nodiscard]] inline coms_vector<T> GetComponentsInChildren(bool recursive = false)
 		{
 			coms_vector<T> coms = coms_vector_resource::create<T>();
 			coms.reserve(CountChildren(recursive));

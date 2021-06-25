@@ -28,7 +28,7 @@ namespace zx
 			pm_ReturnedIds.push(id);
 		}
 	private:
-		T pm_Count;
+		T pm_Count = 0;
 		std::queue<T> pm_ReturnedIds;
 	};
 }
