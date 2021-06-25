@@ -13,5 +13,5 @@ workspace "zxengine"
 	startproject "zxengine-core"
 
 	include "zxengine-core"
-
+	include "glfw"
 
