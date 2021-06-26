@@ -17,11 +17,12 @@ namespace zx
 	}
 	struct entity
 	{
-		inline entity() noexcept
+		[[nodiscard]] inline entity() noexcept
 			: pm_ID(entt::null), pm_PhaseID(entt::null), pm_SceneReg(nullptr) {}
-		
 		[[nodiscard]] inline entity(detail::scene_reg* sceneReg, entt::entity id, entt::entity phaseID) noexcept
 			: pm_ID(id), pm_PhaseID(phaseID), pm_SceneReg(sceneReg) {}
+
+
 		template<component_type T, typename... Args>
 		inline T& AddComponent(Args&&...a)
 		{
@@ -32,14 +33,11 @@ namespace zx
 			return result;
 		}
 		template<component_type T>
-		[[nodiscard]] inline T& GetComponent()
-		{
+		[[nodiscard]] inline T& GetComponent() {
 			return pm_SceneReg->registry.get<T>(pm_ID);
 		}
-
 		template<component_type T>
-		[[nodiscard]] inline bool HasComponent() noexcept
-		{
+		[[nodiscard]] inline bool HasComponent() noexcept{
 			return pm_SceneReg->registry.try_get<T>(pm_ID) != nullptr;
 		}
 		[[nodiscard]] inline bool IsValid() noexcept { return pm_ID != entt::null && pm_PhaseID != entt::null; }
@@ -75,6 +73,7 @@ namespace zx
 			}
 			return coms;
 		}
+
 		std::string_view name();
 		std::string_view tag();
 		zx::matrix matrix();
@@ -92,7 +91,9 @@ namespace zx
 		entt::entity pm_ID;
 		entt::entity pm_PhaseID;
 
-		friend class scene;
 		detail::scene_reg* pm_SceneReg;
+
+
+		friend class scene;
 	};
 }

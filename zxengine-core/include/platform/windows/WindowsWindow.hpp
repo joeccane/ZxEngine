@@ -4,10 +4,10 @@ namespace zx::platform::windows
 	class WindowsWindow: public zx::window
 	{
 	public:
-		WindowsWindow()
-		{
+		WindowsWindow(){
 			stackKey() = "zx glfw window";
 		}
+
 		void initialize() override;
 		void update() override;
 		void exit() override;

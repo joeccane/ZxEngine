@@ -1,2 +1,5 @@
 ﻿  WindowsWindow.cpp
+  entity.cpp
+  scene.cpp
+  Generating Code...
   zxengine-core.vcxproj -> C:\Dev\Repo\cpp\zxengine repo\zxengine\zxengine\build\zxengine-core.lib

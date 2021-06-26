@@ -17,6 +17,7 @@ namespace zx
 	template<typename T>
 	using vector = std::pmr::vector<T>;
 
+
 	namespace detail
 	{
 		template<typename CheckedType, typename T1, typename ...ANY>
@@ -30,6 +31,10 @@ namespace zx
 			const bool value = std::is_same_v<CheckedType, T1>;
 		};
 	}
+	template<typename T, typename ...ANY>
+	concept is_one_of = detail::is_one_of_detail<T, ANY...>::value;
+
+
 	template<typename T, size_t id = 0>
 	struct holder
 	{
@@ -38,11 +43,8 @@ namespace zx
 
 
 	using entity_id = entt::entity;
-	template<typename T, typename ...ANY>
-	concept is_one_of = detail::is_one_of_detail<T, ANY...>::value;
 
-	template<typename... Types>
-	struct type_list{};
+
 	template<typename T>
 	struct ref_wrapper
 	{
@@ -52,8 +54,7 @@ namespace zx
 		ref_wrapper(T& value) : value(&value) {}
 		ref_wrapper(const ref_wrapper& copy) : value(copy.value) {}
 		T* operator->() { return value; }
-		ref_wrapper& operator=(const ref_wrapper& other)
-		{
+		ref_wrapper& operator=(const ref_wrapper& other){
 			value = other.value;
 			return *this;
 		}
@@ -64,6 +65,7 @@ namespace zx
 
 	template<typename T>
 	concept component_type = std::derived_from<T, component>;
+
 	template<component_type T>
 	struct com_ref
 	{
@@ -78,6 +80,8 @@ namespace zx
 	private:
 		T* pm_Value;
 	};
+
+
 
 	
 }

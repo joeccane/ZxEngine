@@ -16,54 +16,56 @@
 
 namespace zx
 {
-#define ZX__GLMWRAPPER(name)\
-template<std::floating_point T>\
-[[nodiscard]] constexpr inline static T name(T value) noexcept {\
-	return glm::name(value);\
-}
+#define ZX_GLMWRAPPER(name)\
+	template<std::floating_point T>\
+	[[nodiscard]] constexpr inline static T name(T value) noexcept {\
+		return glm::name(value);\
+	}
 
-#define ZX__MATH_CONSTANT(name, value)\
-template<std::floating_point T = float>\
-inline static const T name = static_cast<T>(value)
+#define ZX_MATH_CONSTANT(name, value)\
+	template<std::floating_point T = float>\
+	inline static const T name = static_cast<T>(value)
+
+
 	struct math
 	{
 		struct constant
 		{
-			ZX__MATH_CONSTANT(pi, 3.1415926535897932384626433);
-			ZX__MATH_CONSTANT(pi2, pi<T> / 2);
-			ZX__MATH_CONSTANT(pi4, pi<T> / 4);
-			ZX__MATH_CONSTANT(e, 2.71828182845904523536028747);
-			ZX__MATH_CONSTANT(sqrt2, 1.41421356237309504880168872);
-			ZX__MATH_CONSTANT(g, 9.8);
-			ZX__MATH_CONSTANT(G, 0.000000000066743015);
-			ZX__MATH_CONSTANT(log2, 0.69314718055994530941723212);
-			ZX__MATH_CONSTANT(radians_to_degrees, 180.0 / pi<T>);
-			ZX__MATH_CONSTANT(degrees_to_radians, pi<T> / 180.0);
+			ZX_MATH_CONSTANT(pi, 3.1415926535897932384626433);
+			ZX_MATH_CONSTANT(pi2, pi<T> / 2);
+			ZX_MATH_CONSTANT(pi4, pi<T> / 4);
+			ZX_MATH_CONSTANT(e, 2.71828182845904523536028747);
+			ZX_MATH_CONSTANT(sqrt2, 1.41421356237309504880168872);
+			ZX_MATH_CONSTANT(g, 9.8);
+			ZX_MATH_CONSTANT(G, 0.000000000066743015);
+			ZX_MATH_CONSTANT(log2, 0.69314718055994530941723212);
+			ZX_MATH_CONSTANT(radians_to_degrees, 180.0 / pi<T>);
+			ZX_MATH_CONSTANT(degrees_to_radians, pi<T> / 180.0);
 		};
-		ZX__GLMWRAPPER(abs);
-		ZX__GLMWRAPPER(floor);
-		ZX__GLMWRAPPER(ceil);
-		ZX__GLMWRAPPER(log);
-		ZX__GLMWRAPPER(sqrt);
+		ZX_GLMWRAPPER(abs);
+		ZX_GLMWRAPPER(floor);
+		ZX_GLMWRAPPER(ceil);
+		ZX_GLMWRAPPER(log);
+		ZX_GLMWRAPPER(sqrt);
 
-		ZX__GLMWRAPPER(sin);
-		ZX__GLMWRAPPER(cos);
-		ZX__GLMWRAPPER(tan);
+		ZX_GLMWRAPPER(sin);
+		ZX_GLMWRAPPER(cos);
+		ZX_GLMWRAPPER(tan);
 		
-		ZX__GLMWRAPPER(asin);
-		ZX__GLMWRAPPER(acos);
-		ZX__GLMWRAPPER(atan);
+		ZX_GLMWRAPPER(asin);
+		ZX_GLMWRAPPER(acos);
+		ZX_GLMWRAPPER(atan);
 
-		ZX__GLMWRAPPER(sinh);
-		ZX__GLMWRAPPER(cosh);
-		ZX__GLMWRAPPER(tanh);
+		ZX_GLMWRAPPER(sinh);
+		ZX_GLMWRAPPER(cosh);
+		ZX_GLMWRAPPER(tanh);
 
-		ZX__GLMWRAPPER(asinh);
-		ZX__GLMWRAPPER(acosh);
-		ZX__GLMWRAPPER(atanh);
+		ZX_GLMWRAPPER(asinh);
+		ZX_GLMWRAPPER(acosh);
+		ZX_GLMWRAPPER(atanh);
 
 		template<std::floating_point T>
-		[[nodiscard]] inline static T atan2(T y, T x) {
+		[[nodiscard]] inline static T atan2(T y, T x) noexcept {
 			return std::atan2(y, x);
 		}
 		template<std::floating_point T>
@@ -84,7 +86,7 @@ inline static const T name = static_cast<T>(value)
 		}
 		template<typename T>
 		requires std::floating_point<T> || std::integral<T>
-		[[nodiscard]] inline static T max(T a, T b) {
+		[[nodiscard]] inline static constexpr T max(T a, T b) noexcept {
 			if (a > b) 
 				return a;
 			return b;
@@ -138,14 +140,14 @@ inline static const T name = static_cast<T>(value)
 
 		template<typename TValues, typename TDelta>
 		requires (std::floating_point<TValues> || std::integral<TValues>) && std::floating_point<TDelta>
-		[[nodiscard]] inline static TValues lerp(TValues min, TValues max, TDelta t) {
+		[[nodiscard]] inline static constexpr TValues lerp(TValues min, TValues max, TDelta t) noexcept {
 			if (t < 0) return min;
 			if (t > 1) return max;
 			return static_cast<TValues>((max - min) * t + min);
 		}
 		template<typename TValues, typename TDelta>
 		requires (std::floating_point<TValues> || std::integral<TValues>) && std::floating_point<TDelta>
-		[[nodiscard]] inline static TValues smoothstep(TValues min, TValues max, TDelta t) {
+		[[nodiscard]] inline static constexpr TValues smoothstep(TValues min, TValues max, TDelta t) noexcept {
 			t = math::clamp<TValues>((t - min) / (max - min), 0, 1);
 			return static_cast<TValues>(t * t * (3 - 2 * t));
 		}
@@ -162,9 +164,9 @@ inline static const T name = static_cast<T>(value)
 		template<std::same_as<radians_basic<T>> RadBasic>
 		[[nodiscard]] inline constexpr degrees_basic(RadBasic rads) noexcept
 			: value(rads.value * math::constant::radians_to_degrees<T>) {}
-
-
 	};
+
+
 	template<std::floating_point T>
 	struct radians_basic
 	{
@@ -174,6 +176,8 @@ inline static const T name = static_cast<T>(value)
 		[[nodiscard]] inline constexpr radians_basic(degrees_basic<T> degs) noexcept
 			: value(degs.value* math::constant::degrees_to_radians<T>) {}
 	};
+
+
 	template<std::floating_point T>
 	struct angle_basic
 	{
@@ -189,8 +193,7 @@ inline static const T name = static_cast<T>(value)
 			return angle_basic(value * math::constant::degrees_to_radians<T>); 
 		}
 
-		inline constexpr void wrap()
-		{
+		inline constexpr void wrap() noexcept {
 			pm_Radians = std::fmod(pm_Radians + math::constant::pi<T>, 2 * math::constant::pi<T>);
 			if (pm_Radians < 0)
 				pm_Radians += math::constant::pi<T> * 2;
@@ -198,9 +201,9 @@ inline static const T name = static_cast<T>(value)
 		}
 
 		[[nodiscard]] inline static constexpr angle_basic zero() noexcept { return degrees(0); }
-		[[nodiscard]] inline static constexpr angle_basic _45() noexcept { return degrees(45); }
-		[[nodiscard]] inline static constexpr angle_basic _90() noexcept { return degrees(90); }
-		[[nodiscard]] inline static constexpr angle_basic _180() noexcept { return degrees(180); }
+		[[nodiscard]] inline static constexpr angle_basic d45() noexcept { return degrees(45); }
+		[[nodiscard]] inline static constexpr angle_basic d90() noexcept { return degrees(90); }
+		[[nodiscard]] inline static constexpr angle_basic d180() noexcept { return degrees(180); }
 
 		[[nodiscard]] inline constexpr angle_basic operator+(angle_basic other) const noexcept {
 			return angle_basic(pm_Radians + other.pm_Radians); 
@@ -221,47 +224,52 @@ inline static const T name = static_cast<T>(value)
 			return angle_basic(pm_Radians);
 		}
 
-		inline constexpr angle_basic& operator=(angle_basic other) {
+		inline constexpr angle_basic& operator=(angle_basic other) noexcept {
 			pm_Radians = other.pm_Radians;
 			return *this;
 		}
-		inline constexpr angle_basic& operator+=(angle_basic other) {
+		inline constexpr angle_basic& operator+=(angle_basic other) noexcept {
 			pm_Radians += other.pm_Radians;
 			return *this;
 		}
-		inline constexpr angle_basic& operator-=(angle_basic other) {
+		inline constexpr angle_basic& operator-=(angle_basic other) noexcept {
 			pm_Radians -= other.pm_Radians;
 			return *this;
 		}
-		inline constexpr angle_basic& operator*=(T other) {
+		inline constexpr angle_basic& operator*=(T other) noexcept {
 			pm_Radians *= other;
 			return *this;
 		}
-		inline constexpr angle_basic& operator/=(T other) {
+		inline constexpr angle_basic& operator/=(T other) noexcept {
 			pm_Radians /= other;
 			return *this;
 		}
 
 
-		[[nodiscard]] inline constexpr explicit operator radians_basic<T>() {
+		[[nodiscard]] inline constexpr explicit operator radians_basic<T>() noexcept {
 			return radians_basic(pm_Radians);
 		}
-		[[nodiscard]] inline constexpr explicit operator degrees_basic<T>() {
+		[[nodiscard]] inline constexpr explicit operator degrees_basic<T>() noexcept {
 			return degrees_basic(pm_Radians * math::constant::radians_to_degrees<T>);
 		}
 
-		[[nodiscard]] inline operator T* () {
+		[[nodiscard]] inline operator T* () noexcept {
 			return &pm_Radians;
 		}
 	private:
-		[[nodiscard]] inline constexpr angle_basic(T radians) : pm_Radians(radians) {}
+		[[nodiscard]] inline constexpr angle_basic(T radians) noexcept 
+			: pm_Radians(radians) {}
 
 		T pm_Radians;
 	};
 
+
 	using angle = angle_basic<float>;
 	using degrees = degrees_basic<float>;
 	using radians = radians_basic<float>;
+
+
+
 
 	struct vector2
 	{
@@ -272,14 +280,22 @@ inline static const T name = static_cast<T>(value)
 			};
 		};
 
-		[[nodiscard]] inline constexpr vector2() noexcept : x(0), y(0) {}
-		[[nodiscard]] inline constexpr vector2(const vector2& copy) noexcept : x(copy.x), y(copy.y) {}
-		[[nodiscard]] inline constexpr vector2(vector2&& move) noexcept : x(move.x), y(move.y) {}
+		[[nodiscard]] inline constexpr vector2() noexcept 
+			: x(0), y(0) {}
+		[[nodiscard]] inline constexpr vector2(const vector2& copy) noexcept
+			: x(copy.x), y(copy.y) {}
+		[[nodiscard]] inline constexpr vector2(vector2&& move) noexcept 
+			: x(move.x), y(move.y) {}
 
-		[[nodiscard]] inline constexpr vector2(float value) noexcept : x(value), y(value) {}
-		[[nodiscard]] inline constexpr vector2(float x, float y) noexcept : x(x), y(y) {}
+		[[nodiscard]] inline constexpr vector2(float value) noexcept 
+			: x(value), y(value) {}
+		[[nodiscard]] inline constexpr vector2(float x, float y) noexcept 
+			: x(x), y(y) {}
 
-		[[nodiscard]] inline constexpr vector2(glm::vec2 glmVector) noexcept : glmVector(glmVector) {}
+		[[nodiscard]] inline constexpr vector2(glm::vec2 glmVector) noexcept 
+			: glmVector(glmVector) {}
+
+
 		inline void Normalize() noexcept
 		{
 			glmVector = glm::normalize(glmVector);
@@ -405,16 +421,26 @@ inline static const T name = static_cast<T>(value)
 			vector2 xy;
 		};
 
-		[[nodiscard]] inline constexpr vector3() noexcept : x(0), y(0), z(0) {}
-		[[nodiscard]] inline constexpr vector3(const vector3& copy) noexcept : x(copy.x), y(copy.y), z(copy.z) {}
-		[[nodiscard]] inline constexpr vector3(vector3&& move) noexcept : x(move.x), y(move.y), z(move.z) {}
+		[[nodiscard]] inline constexpr vector3() noexcept
+			: x(0), y(0), z(0) {}
+		[[nodiscard]] inline constexpr vector3(const vector3& copy) noexcept
+			: x(copy.x), y(copy.y), z(copy.z) {}
+		[[nodiscard]] inline constexpr vector3(vector3&& move) noexcept
+			: x(move.x), y(move.y), z(move.z) {}
 
-		[[nodiscard]] inline constexpr vector3(float value) noexcept : x(value), y(value), z(value) {}
-		[[nodiscard]] inline constexpr vector3(float x, float y) noexcept : x(x), y(y), z(0) {}
-		[[nodiscard]] inline constexpr vector3(float x, float y, float z) noexcept : x(x), y(y), z(z) {}
-		[[nodiscard]] inline constexpr explicit vector3(const vector2& v) noexcept : x(v.x), y(v.y), z(0) {}
-		[[nodiscard]] inline constexpr vector3(const vector2& v, float z) noexcept : x(v.x), y(v.y), z(z) {}
-		[[nodiscard]] inline constexpr explicit vector3(const glm::vec3& glmVector) noexcept : glmVector(glmVector) {}
+		[[nodiscard]] inline constexpr vector3(float value) noexcept
+			: x(value), y(value), z(value) {}
+		[[nodiscard]] inline constexpr vector3(float x, float y) noexcept 
+			: x(x), y(y), z(0) {}
+		[[nodiscard]] inline constexpr vector3(float x, float y, float z) noexcept 
+			: x(x), y(y), z(z) {}
+
+		[[nodiscard]] inline constexpr explicit vector3(const vector2& v) noexcept 
+			: x(v.x), y(v.y), z(0) {}
+		[[nodiscard]] inline constexpr vector3(const vector2& v, float z) noexcept 
+			: x(v.x), y(v.y), z(z) {}
+		[[nodiscard]] inline constexpr explicit vector3(const glm::vec3& glmVector) noexcept 
+			: glmVector(glmVector) {}
 
 		inline void Normalize() noexcept
 		{
@@ -566,19 +592,30 @@ inline static const T name = static_cast<T>(value)
 			vector3 xyz;
 		};
 
-		[[nodiscard]] inline constexpr vector4() noexcept : x(0), y(0), z(0), w(0) {}
-		[[nodiscard]] inline constexpr vector4(const vector4& copy) : x(copy.x), y(copy.y), z(copy.z), w(copy.w) {}
-		[[nodiscard]] inline constexpr vector4(vector4&& move) noexcept : x(move.x), y(move.y), z(move.z), w(move.w) {}
+		[[nodiscard]] inline constexpr vector4() noexcept 
+			: x(0), y(0), z(0), w(0) {}
+		[[nodiscard]] inline constexpr vector4(const vector4& copy) 
+			: x(copy.x), y(copy.y), z(copy.z), w(copy.w) {}
+		[[nodiscard]] inline constexpr vector4(vector4&& move) noexcept 
+			: x(move.x), y(move.y), z(move.z), w(move.w) {}
 
-		[[nodiscard]] inline constexpr vector4(float value) noexcept : x(value), y(value), z(value), w(value) {}
-		[[nodiscard]] inline constexpr vector4(float x, float y) noexcept : x(x), y(y), z(0), w(1) {}
-		[[nodiscard]] inline constexpr vector4(float x, float y, float z) noexcept : x(x), y(y), z(z), w(1) {}
-		[[nodiscard]] inline constexpr vector4(float x, float y, float z, float w) noexcept : x(), y(y), z(z), w(w) {}
+		[[nodiscard]] inline constexpr vector4(float value) noexcept 
+			: x(value), y(value), z(value), w(value) {}
+		[[nodiscard]] inline constexpr vector4(float x, float y) noexcept 
+			: x(x), y(y), z(0), w(1) {}
+		[[nodiscard]] inline constexpr vector4(float x, float y, float z) noexcept 
+			: x(x), y(y), z(z), w(1) {}
+		[[nodiscard]] inline constexpr vector4(float x, float y, float z, float w) noexcept 
+			: x(), y(y), z(z), w(w) {}
 
-		[[nodiscard]] inline constexpr explicit vector4(const vector2& v) noexcept : x(v.x), y(v.y), z(0), w(1) {}
-		[[nodiscard]] inline constexpr vector4(const vector2& v, float z) noexcept : x(v.x), y(v.y), z(z), w(1) {}
-		[[nodiscard]] inline constexpr explicit vector4(const vector3& v) noexcept : x(v.x), y(v.y), z(v.z), w(1) {}
-		[[nodiscard]] inline constexpr vector4(const vector3& v, float w) noexcept : x(v.x), y(v.y), z(v.z), w(w) {}
+		[[nodiscard]] inline constexpr explicit vector4(const vector2& v) noexcept 
+			: x(v.x), y(v.y), z(0), w(1) {}
+		[[nodiscard]] inline constexpr vector4(const vector2& v, float z) noexcept 
+			: x(v.x), y(v.y), z(z), w(1) {}
+		[[nodiscard]] inline constexpr explicit vector4(const vector3& v) noexcept 
+			: x(v.x), y(v.y), z(v.z), w(1) {}
+		[[nodiscard]] inline constexpr vector4(const vector3& v, float w) noexcept 
+			: x(v.x), y(v.y), z(v.z), w(w) {}
 
 		[[nodiscard]] inline constexpr explicit vector4(const glm::vec4& glmVector) noexcept : glmVector(glmVector) {}
 
@@ -605,12 +642,16 @@ inline static const T name = static_cast<T>(value)
 		[[nodiscard]] inline static float distanceSqrd(const vector4& from, const vector4& to) {
 			return math::pow(from.x - to.x, 2.0f) + math::pow(from.y - to.y, 2.0f) + math::pow(from.z - to.z, 2.0f) + math::pow(from.w - to.w, 2.0f);
 		}
+
 		[[nodiscard]] inline static float dot(const vector4& a, const vector4& b) noexcept {
 			return glm::dot(a.glmVector, b.glmVector);
 		}
+
 		[[nodiscard]] inline static vector4 reflect(const vector4& vector, const vector4& normal) {
 			return vector4(glm::reflect(vector.glmVector, normal.glmVector));
 		}
+
+
 		[[nodiscard]] inline constexpr vector4 operator+(const vector4& other) const noexcept {
 			return { x + other.x, y + other.y, z + other.z, w + other.w };
 		}
@@ -664,10 +705,10 @@ inline static const T name = static_cast<T>(value)
 		}
 
 
-		[[nodiscard]] inline constexpr bool operator==(const vector4& other) const {
+		[[nodiscard]] inline constexpr bool operator==(const vector4& other) const noexcept {
 			return x == other.x && y == other.y && z == other.z && w == other.w;
 		}
-		[[nodiscard]] inline constexpr bool operator!=(const vector4& other) const {
+		[[nodiscard]] inline constexpr bool operator!=(const vector4& other) const noexcept {
 			return x != other.x || y != other.y || z != other.z || w != other.w;
 		}
 
@@ -718,10 +759,10 @@ inline static const T name = static_cast<T>(value)
 			return vector4(x, y, z).normalized();
 		}
 
-		[[nodiscard]] inline static vector4 lerp(const vector4& min, const vector4& max, float t) {
+		[[nodiscard]] inline static vector4 lerp(const vector4& min, const vector4& max, float t) noexcept {
 			return vector4(math::lerp(min.x, max.x, t), math::lerp(min.y, max.y, t), math::lerp(min.z, max.z, t));
 		}
-		[[nodiscard]] inline static vector4 smoothstep(const vector4& min, const vector4& max, float t) {
+		[[nodiscard]] inline static vector4 smoothstep(const vector4& min, const vector4& max, float t) noexcept {
 			return vector4(math::smoothstep(min.x, max.x, t), math::smoothstep(min.y, max.y, t), math::smoothstep(min.z, max.z, t));
 		}
 
@@ -738,12 +779,17 @@ inline static const T name = static_cast<T>(value)
 			struct { int x, y; };
 		};
 
-		[[nodiscard]] inline constexpr point2() noexcept : x(0), y(0) {}
-		[[nodiscard]] inline constexpr point2(const point2& copy) noexcept : x(copy.x), y(copy.y) {}
-		[[nodiscard]] inline constexpr point2(point2&& move) noexcept : x(move.x), y(move.y) {}
+		[[nodiscard]] inline constexpr point2() noexcept 
+			: x(0), y(0) {}
+		[[nodiscard]] inline constexpr point2(const point2& copy) noexcept 
+			: x(copy.x), y(copy.y) {}
+		[[nodiscard]] inline constexpr point2(point2&& move) noexcept 
+			: x(move.x), y(move.y) {}
 
-		[[nodiscard]] inline constexpr point2(int value) noexcept : x(value), y(value) {}
-		[[nodiscard]] inline constexpr point2(int x, int y) noexcept : x(x), y(y) {}
+		[[nodiscard]] inline constexpr point2(int value) noexcept 
+			: x(value), y(value) {}
+		[[nodiscard]] inline constexpr point2(int x, int y) noexcept 
+			: x(x), y(y) {}
 
 		[[nodiscard]] inline constexpr point2 operator+(const point2& other) const noexcept {
 			return { x + other.x, y + other.y };
@@ -779,15 +825,22 @@ inline static const T name = static_cast<T>(value)
 			struct { int x, y, z; };
 		};
 
-		[[nodiscard]] inline constexpr point3() noexcept : x(0), y(0), z(0) {}
-		[[nodiscard]] inline constexpr point3(const point3& copy) noexcept : x(copy.x), y(copy.y), z(copy.z) {}
-		[[nodiscard]] inline constexpr point3(point3&& move) noexcept : x(move.x), y(move.y), z(move.z) {}
+		[[nodiscard]] inline constexpr point3() noexcept 
+			: x(0), y(0), z(0) {}
+		[[nodiscard]] inline constexpr point3(const point3& copy) noexcept 
+			: x(copy.x), y(copy.y), z(copy.z) {}
+		[[nodiscard]] inline constexpr point3(point3&& move) noexcept 
+			: x(move.x), y(move.y), z(move.z) {}
 
-		[[nodiscard]] inline constexpr point3(int value) noexcept : x(value), y(value), z(value) {}
-		[[nodiscard]] inline constexpr point3(int x, int y) noexcept : x(x), y(y), z(0) {}
-		[[nodiscard]] inline constexpr point3(int x, int y, int z) noexcept : x(x), y(y), z(z) {}
+		[[nodiscard]] inline constexpr point3(int value) noexcept 
+			: x(value), y(value), z(value) {}
+		[[nodiscard]] inline constexpr point3(int x, int y) noexcept 
+			: x(x), y(y), z(0) {}
+		[[nodiscard]] inline constexpr point3(int x, int y, int z) noexcept 
+			: x(x), y(y), z(z) {}
 
-		[[nodiscard]] inline constexpr explicit point3(const point2& convert) : x(convert.x), y(convert.y), z(0) {}
+		[[nodiscard]] inline constexpr explicit point3(const point2& convert) 
+			: x(convert.x), y(convert.y), z(0) {}
 
 
 		[[nodiscard]] inline constexpr point3 operator+(const point3& other) const noexcept {
@@ -817,7 +870,9 @@ inline static const T name = static_cast<T>(value)
 			return &x;
 		}
 	};
+
 	using size3 = point3;
+
 
 	struct matrix
 	{
@@ -832,11 +887,15 @@ inline static const T name = static_cast<T>(value)
 			float data[16];
 		};
 
-		[[nodiscard]] inline matrix() noexcept : glmMatrix(glm::mat4(1.0f)) {}
-		[[nodiscard]] inline matrix(const matrix& copy) noexcept : glmMatrix(copy.glmMatrix) {}
-		[[nodiscard]] inline matrix(matrix&& move) noexcept : glmMatrix(move.glmMatrix) {}
+		[[nodiscard]] inline matrix() noexcept 
+			: glmMatrix(glm::mat4(1.0f)) {}
+		[[nodiscard]] inline matrix(const matrix& copy) noexcept 
+			: glmMatrix(copy.glmMatrix) {}
+		[[nodiscard]] inline matrix(matrix&& move) noexcept 
+			: glmMatrix(move.glmMatrix) {}
 
-		[[nodiscard]] inline explicit matrix(const glm::mat4& convert) noexcept : glmMatrix(convert) {}
+		[[nodiscard]] inline explicit matrix(const glm::mat4& convert) noexcept 
+			: glmMatrix(convert) {}
 
 		[[nodiscard]] inline static matrix identity() noexcept { return matrix(glm::mat4(1.0f)); }
 

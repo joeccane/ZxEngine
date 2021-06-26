@@ -4,12 +4,14 @@
 namespace zx
 {
 	class optimize_behaviour{};
+
 	template<typename Parent, component_type ...Coms>
 	class behaviour
 	{
 	public:
 		virtual void run(Coms&...a) = 0;
 		using behaviour_type = behaviour;
+
 	private:
 		friend class scene;
 

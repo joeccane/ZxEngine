@@ -26,6 +26,7 @@ namespace zx
 			std::function<void(T&)> function;
 			size_t id;
 		};
+
 		template<typename TFunc>
 		requires requires(TFunc f, T data) { {f(data) } -> std::same_as<void>; }
 		[[nodiscard]] subscriber_id Subscribe(TFunc& func, layer_id layer = 0) noexcept
@@ -54,7 +55,7 @@ namespace zx
 		}
 
 		template<std::derived_from<iLayer> TLayer>
-		/*[[nbodiscard]] INTERNAL COMPILER ERROR*/ 
+		/*[[nodiscard]] INTERNAL COMPILER ERROR*/ 
 		subscriber_id Subscribe(TLayer* instance, auto func) noexcept
 		{
 			auto id = pm_Counter.get();
@@ -83,13 +84,13 @@ namespace zx
 
 		template<typename TFunc>
 		requires requires(TFunc f, T data) { {f(data) } -> std::same_as<void>; }
-		[[nodiscard]] subscriber_id operator<<(TFunc& f) noexcept
+		[[nodiscard]] inline subscriber_id operator<<(TFunc& f) noexcept
 		{
 			return Subscribe(f);
 		}
 		template<typename TFunc>
 		requires requires(TFunc f, T data) { {f(data) } -> std::same_as<void>; }
-		[[nodiscard]] subscriber_id operator<<(TFunc&& f) noexcept
+		[[nodiscard]] inline subscriber_id operator<<(TFunc&& f) noexcept
 		{
 			return Subscribe(f);
 		}
@@ -103,7 +104,7 @@ namespace zx
 					return;
 			}
 		}
-		void InvokeIgnoreHandled(T& value) noexcept
+		inline void InvokeIgnoreHandled(T& value) noexcept
 		{
 			for (auto& callback : pm_Callbacks)
 				callback.function(value);
@@ -127,7 +128,7 @@ namespace zx
 		inline void Enqueue(T&& data) {
 			ps_Queue.emplace(std::forward<T>(data));
 		}
-		void InvokeAll()
+		inline void InvokeAll()
 		{
 			while (ps_Queue.size() > 0)
 			{

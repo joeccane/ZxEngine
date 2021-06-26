@@ -7,16 +7,14 @@ namespace zx
 	class iLayer
 	{
 	public:
-		iLayer(layer_id layer = 0)
-			: pm_Enabled(true), pm_Layer(layer)
-		{}
-		virtual ~iLayer() = default;
+		iLayer(layer_id layer = 0) noexcept
+			: pm_Enabled(true), pm_Layer(layer) {}
 
+		[[nodiscard]] inline layer_id layer() const noexcept { return pm_Layer; }
+		[[nodiscard]] inline layer_id& layer() noexcept { return pm_Layer; }
 
-		layer_id layer() const { return pm_Layer; }
-		layer_id& layer() { return pm_Layer; }
+		[[nodiscard]] inline bool enabled() const noexcept { return pm_Enabled; }
 
-		bool enabled() const { return pm_Enabled; }
 		void Enable()
 		{
 			if (!pm_Enabled)
@@ -40,6 +38,9 @@ namespace zx
 		layer_id pm_Layer;
 		bool pm_Enabled;
 	};
+
+
+
 	template<std::derived_from<iLayer> T = iLayer>
 	class LayerGroup
 	{
@@ -59,31 +60,25 @@ namespace zx
 
 		template<typename TFunc>
 		requires requires(TFunc f, T* l) { {f(l)} -> std::same_as<void>; }
-		void foreach(TFunc& f)
-		{
+		void foreach(TFunc& f) {
 			for (auto layer : pm_Layers)
-			{
 				f(layer);
-			}
 		}
 		template<typename TFunc>
 		requires requires(TFunc f, T* l) { {f(l)} -> std::same_as<void>; }
-		void foreach(TFunc&& f)
-		{
+		void foreach(TFunc&& f) {
 			for (auto layer : pm_Layers)
-			{
 				f(layer);
-			}
 		}
+
 		zxIteratorFunctions(pm_Layers);
 
-		iterator Add(T* value)
-		{
+		iterator Add(T* value) noexcept {
 			auto it = pm_Layers.insert(value);
 			LayerAdded(value);
 			return it;
 		}
-		bool Remove(T* value)
+		bool Remove(T* value) noexcept
 		{
 			auto it = std::find(begin(), end(), value);
 			if (it == end())

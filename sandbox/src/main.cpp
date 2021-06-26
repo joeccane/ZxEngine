@@ -6,8 +6,4 @@ int main()
 	auto window = app->CreateWindow<zx::platform::windows::WindowsWindow>();
 
 	app->Run();
-
-	delete window;
-	delete scene;
-	delete app;
 }

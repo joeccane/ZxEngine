@@ -1,5 +1,7 @@
 #include "pch.hpp"
-#include "scene/ecs.hpp"
+#include "scene/entity.hpp"
+#include "scene/component_types.hpp"
+
 #include <string_view>
 inline std::string_view zx::entity::name()
 {

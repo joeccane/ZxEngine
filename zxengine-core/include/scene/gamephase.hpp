@@ -7,20 +7,20 @@ namespace zx
 {
 	namespace phase
 	{
-#define _ZX__DefinePhaseFunc(name)\
-struct name##_phase_type : entt::type_list<void()>\
-{\
-	template<typename Base>\
-	struct type : Base\
+#define _ZX__DefinePhaseFunc(NAME)\
+	struct NAME##_phase_type : entt::type_list<void()>\
 	{\
-		void name() { this->template invoke<0>(*this); }\
+		template<typename Base>\
+		struct type : Base\
+		{\
+			void NAME() { this->template invoke<0>(*this); }\
+		};\
+		template<typename Type>\
+		using impl = entt::value_list<&Type::NAME>;\
 	};\
-	template<typename Type>\
-	using impl = entt::value_list<&Type::name>;\
-};\
-using name = entt::poly<name##_phase_type>;\
-template<typename T>\
-concept has_##name = requires(T t) { t.name(); }
+	using NAME = entt::poly<NAME##_phase_type>;\
+	template<typename T>\
+	concept has_##NAME = requires(T t) { t.NAME(); }
 
 		_ZX__DefinePhaseFunc(initialize);
 		_ZX__DefinePhaseFunc(awake);
@@ -48,15 +48,17 @@ concept has_##name = requires(T t) { t.name(); }
 			}
 		};
 
-#define ZX__ADDFUNC(name)\
-if constexpr(has_##name<T>)\
-	AddFunc<name>(id, t)
+#define ZX__ADDFUNC(NAME)\
+	if constexpr(has_##NAME<T>)\
+		AddFunc<NAME>(id, t)
+
 		class registry
 		{
 		public:
 			entt::registry pm_Registry;
+
 			template<typename FuncType, typename T>
-			inline void AddFunc(entity_id id, T& t)
+			inline void AddFunc(entity_id id, T& t) noexcept
 			{
 				func_component<FuncType>* funcs = pm_Registry.try_get<func_component<FuncType>>(id);
 				if (funcs == nullptr)
@@ -67,8 +69,9 @@ if constexpr(has_##name<T>)\
 
 				funcs->map[typeid(T)] = FuncType{ std::reference_wrapper(t) };
 			}
-		public:
-			inline entity_id create() { return pm_Registry.create(); }
+
+			[[nodiscard]] inline entity_id create() noexcept { return pm_Registry.create(); }
+
 			template<typename T>
 			inline void add_functions(entity_id id, T& t)
 			{
@@ -86,19 +89,19 @@ if constexpr(has_##name<T>)\
 
 				ZX__ADDFUNC(exit);
 			}
-#define _ZX__PhaseCallFunc(name)\
-inline void call_##name()\
-{\
-	auto view = pm_Registry.view<func_component<name>>();\
-	for (auto v : view)\
+#define _ZX__PhaseCallFunc(NAME)\
+	inline void call_##NAME()\
 	{\
-		func_component<name>& funcs = pm_Registry.get<func_component<name>>(v);\
-		for (auto& [key, value] : funcs.map)\
+		auto view = pm_Registry.view<func_component<NAME>>();\
+		for (auto v : view)\
 		{\
-			value->name();\
+			func_component<NAME>& funcs = pm_Registry.get<func_component<NAME>>(v);\
+			for (auto& [key, value] : funcs.map)\
+			{\
+				value->NAME();\
+			}\
 		}\
-	}\
-}
+	}
 			_ZX__PhaseCallFunc(initialize);
 			_ZX__PhaseCallFunc(start);
 			_ZX__PhaseCallFunc(awake);

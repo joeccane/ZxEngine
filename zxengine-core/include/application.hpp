@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include <concepts>
+
 #include "scene/ecs.hpp"
 #include "time.hpp"
 #include "system.hpp"
@@ -19,14 +20,15 @@ namespace zx
 
 
 		template<std::derived_from<scene> T>
-		T* CreateScene(std::string_view name)
+		[[nodiscard]] T* CreateScene(std::string_view name) noexcept
 		{
 			T* result = new T();
 			pm_Scenes[name.data()] = result;
 			return result;
 		}
+
 		template<std::derived_from<window> T>
-		T* CreateWindow()
+		[[nodiscard]] T* CreateWindow()
 		{
 			T* result = new T();
 			const T* cResult = static_cast<const T*>(result);
@@ -53,6 +55,9 @@ namespace zx
 #define ZX__CallSceneFunc(name)\
 for(auto& [key, value] : pm_Scenes)\
 	value->name();
+
+
+
 		void Run()
 		{
 			
@@ -105,10 +110,13 @@ for(auto& [key, value] : pm_Scenes)\
 			pm_Running = false;
 		}
 	private:
+
 		std::unordered_map<std::string, scene*> pm_Scenes;
-		bool pm_Running = false;
+
 		std::string pm_Name = "zxengine Application";
 		KeyStack pm_KeyStack;
+		bool pm_Running = false;
+
 		inline static const std::string appBlockStackKey = "__zxengine app block";
 
 	};
