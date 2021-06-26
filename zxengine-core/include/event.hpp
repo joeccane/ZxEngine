@@ -128,11 +128,14 @@ namespace zx
 		inline void Enqueue(T&& data) {
 			ps_Queue.emplace(std::forward<T>(data));
 		}
-		inline void InvokeAll()
+		inline void InvokeAll(std::function<void(T&)> callback = std::function<void(T&)>())
 		{
 			while (ps_Queue.size() > 0)
 			{
+				auto& f = ps_Queue.front();
 				event.Invoke(ps_Queue.front());
+				if (callback)
+					callback(f);
 				ps_Queue.pop();
 			}
 		}

@@ -10,9 +10,11 @@ namespace zx::platform::windows
 
 		void initialize() override;
 		void update() override;
+		void late_update() override;
 		void exit() override;
 		void post_render() override;
 
+		vector2 mousePos() override;
 	protected:
 		bool NativeInitialization() override;
 		void NativeDispose() override;

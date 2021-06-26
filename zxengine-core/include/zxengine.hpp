@@ -8,4 +8,5 @@
 #include "system.hpp"
 #include "event.hpp"
 #include "window.hpp"
+#include "input_codes.hpp"
 #include "platform/windows/WindowsWindow.hpp"
