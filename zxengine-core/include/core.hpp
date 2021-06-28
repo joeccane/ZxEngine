@@ -1,16 +1,23 @@
 #pragma once
+#include <concepts>
 #include <type_traits>
 #include <vendor/entt.hpp>
 #include <memory_resource>
-#define zxIteratorFunctions(innerCollection)\
-	[[nodiscard]] auto begin() { return innerCollection.begin(); }\
-	[[nodiscard]] auto end() { return innerCollection.end(); }\
-	[[nodiscard]] auto rbegin() { return innerCollection.rbegin(); }\
-	[[nodiscard]] auto rend() { return innerCollection.rend(); }\
-	[[nodiscard]] auto cbegin() const { return innerCollection.cbegin(); }\
-	[[nodiscard]] auto cend() const { return innerCollection.cend(); }\
-	[[nodiscard]] auto crbegin() const { return innerCollection.crbegin(); }\
+#define zxIteratorFunctions(innerCollection)									\
+	[[nodiscard]] auto begin() { return innerCollection.begin(); }				\
+	[[nodiscard]] auto end() { return innerCollection.end(); }					\
+	[[nodiscard]] auto rbegin() { return innerCollection.rbegin(); }			\
+	[[nodiscard]] auto rend() { return innerCollection.rend(); }				\
+	[[nodiscard]] auto cbegin() const { return innerCollection.cbegin(); }		\
+	[[nodiscard]] auto cend() const { return innerCollection.cend(); }			\
+	[[nodiscard]] auto crbegin() const { return innerCollection.crbegin(); }	\
 	[[nodiscard]] auto crend() const { return innerCollection.crend(); }
+
+#define zxAttribute(name) public name##_attribute
+#define zxDefineAttribute(name)																\
+	struct name##_attribute;																\
+	template<typename T> concept name##_type = std::derived_from<T, name##_attribute>;		\
+	struct name##_attribute
 
 namespace zx
 {
@@ -59,29 +66,6 @@ namespace zx
 			return *this;
 		}
 	};
-
-	struct component;
-
-
-	template<typename T>
-	concept component_type = std::derived_from<T, component>;
-
-	template<component_type T>
-	struct com_ref
-	{
-		com_ref() = default;
-		com_ref(const com_ref& copy) = default;
-		com_ref(com_ref&& move) = default;
-
-		inline com_ref(T& com, entity_id parent) : parent(parent), pm_Value(&com) {}
-		entity_id parent;
-		T& value() { return *pm_Value; }
-		T* operator-> () { return pm_Value; }
-	private:
-		T* pm_Value;
-	};
-
-
 
 	
 }

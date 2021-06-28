@@ -7,20 +7,20 @@ namespace zx
 {
 	namespace com
 	{
-		struct name_tag : public component
+		struct name_tag : zxAttribute(component)
 		{
 			std::string name = "Entity";
 			std::string tag = "none";
 		};
-		struct hierarchy : public component
+		struct hierarchy : zxAttribute(component)
 		{
 			zx::entity parent; 
 			std::vector<zx::entity> children;
 		};
-		struct transform : public component
+		struct transform : zxAttribute(component)
 		{
 			zx::matrix matrix() {
-				hierarchy& h = entity.GetComponent<hierarchy>();
+				hierarchy& h = entity->GetComponent<hierarchy>();
 				if (h.parent.IsValid())
 					return pm_Matrix * h.parent.GetComponent<transform>().matrix();
 			}

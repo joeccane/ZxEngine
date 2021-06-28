@@ -3,44 +3,48 @@
 #include "core.hpp"
 #include <utility>
 #include "gamephase.hpp"
-#include "scene/coms_vector.hpp"
 #include "math.hpp"
+#include "component.hpp"
+#include "registry.hpp"
 namespace zx
 {
-	namespace detail
-	{
-		struct scene_reg
-		{
-			entt::registry registry;
-			phase::registry* phaseRegistry = nullptr;
-		};
-	}
 	struct entity
 	{
 		[[nodiscard]] inline entity() noexcept
-			: pm_ID(entt::null), pm_PhaseID(entt::null), pm_SceneReg(nullptr) {}
-		[[nodiscard]] inline entity(detail::scene_reg* sceneReg, entt::entity id, entt::entity phaseID) noexcept
-			: pm_ID(id), pm_PhaseID(phaseID), pm_SceneReg(sceneReg) {}
-
+			: pm_ID(entt::null), pm_Scene(nullptr) {}
+		[[nodiscard]] inline entity(SceneRegistry* scene) 
+			: pm_ID(scene->registry.create()), pm_Scene(scene) {
+		}
 
 		template<component_type T, typename... Args>
 		inline T& AddComponent(Args&&...a)
 		{
-			pm_SceneReg->registry.emplace<T>(pm_ID, std::forward<Args>(a)...);
-			auto& result = pm_SceneReg->registry.get<T>(pm_ID);
-			result.entity = *this;
-			pm_SceneReg->phaseRegistry->add_functions(pm_PhaseID, result);
+			pm_Scene->registry.emplace<T>(pm_ID, std::forward<Args>(a)...);
+			auto& result = pm_Scene->registry.get<T>(pm_ID);
+			phase::RegisterAll<T,
+				phase::awake,
+				phase::initialize,
+				phase::start,
+				phase::early_update,
+				phase::update,
+				phase::late_update,
+				phase::pre_render,
+				phase::render,
+				phase::post_render,
+				phase::dispose,
+				phase::exit>(result, pm_Scene->sceneID);
+			result.entity = this;
 			return result;
 		}
 		template<component_type T>
 		[[nodiscard]] inline T& GetComponent() {
-			return pm_SceneReg->registry.get<T>(pm_ID);
+			return pm_Scene->registry.get<T>(pm_ID);
 		}
 		template<component_type T>
 		[[nodiscard]] inline bool HasComponent() noexcept{
-			return pm_SceneReg->registry.try_get<T>(pm_ID) != nullptr;
+			return pm_Scene->registry.try_get<T>(pm_ID) != nullptr;
 		}
-		[[nodiscard]] inline bool IsValid() noexcept { return pm_ID != entt::null && pm_PhaseID != entt::null; }
+		[[nodiscard]] inline bool IsValid() noexcept { return pm_ID != entt::null; }
 
 		inline size_t CountChildren(bool recursive = false)
 		{
@@ -54,10 +58,11 @@ namespace zx
 			return count;
 		}
 		template<component_type T>
-		[[nodiscard]] inline coms_vector<T> GetComponentsInChildren(bool recursive = false)
+		[[nodiscard]] inline std::vector<T> GetComponentsInChildren(bool recursive = false)
 		{
-			coms_vector<T> coms = coms_vector_resource::create<T>();
+			std::vector<T> coms;
 			coms.reserve(CountChildren(recursive));
+
 			for (auto& child : children())
 			{
 				if (child.HasComponent<T>())
@@ -79,7 +84,6 @@ namespace zx
 		zx::matrix matrix();
 		std::vector<entity>& children();
 		entity parent();
-
 		void SetParent(entity e);
 		void AddChild(entity e);
 		void RemoveChild(entity e);
@@ -89,9 +93,7 @@ namespace zx
 
 	private:
 		entt::entity pm_ID;
-		entt::entity pm_PhaseID;
-
-		detail::scene_reg* pm_SceneReg;
+		SceneRegistry* pm_Scene;
 
 
 		friend class scene;
