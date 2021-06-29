@@ -12,6 +12,7 @@ namespace zx::platform::windows
 		void update() override;
 		void late_update() override;
 		void exit() override;
+		void pre_render() override;
 		void post_render() override;
 
 		vector2 mousePos() override;

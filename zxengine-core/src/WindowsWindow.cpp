@@ -3,7 +3,6 @@
 #include "application.hpp"
 #include "debug.hpp"
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include "platform/windows/WindowInputCodeConvert.hpp"
 namespace zx::platform::windows
 {
@@ -20,11 +19,22 @@ namespace zx::platform::windows
 	}
 	void WindowsWindow::initialize()
 	{
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+		pm_NativeWindow = glfwCreateWindow(pm_Options.size.width, pm_Options.size.height, pm_Options.title.c_str(), NULL, NULL);
+		glfwMakeContextCurrent(GWindow(this));
 
-		pm_NativeWindow = glfwCreateWindow(640, 480, "TestWindow", NULL, NULL);
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			zxFatalAssert(false, "Could not load OpenGL")
+		}
+		glClearColor(1.0f, 0.25f, 1.0f, 1.0f);
 		if (!pm_NativeWindow)
 			PrintError();
 		glfwSetWindowUserPointer(GWindow(this), this);
+
 		//hook events
 		glfwSetKeyCallback(GWindow(this), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 
@@ -101,8 +111,6 @@ namespace zx::platform::windows
 		if (glfwWindowShouldClose(GWindow(this)))
 			pm_ShouldClose = true;
 
-		glfwSwapBuffers(GWindow(this));
-		glfwWaitEvents();
 	}
 	void WindowsWindow::late_update()
 	{
@@ -123,8 +131,14 @@ namespace zx::platform::windows
 		pm_MouseMovedEvent.InvokeAll();
 		pm_PrevMousePos = mousePos();
 	}
+	void WindowsWindow::pre_render()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 	void WindowsWindow::post_render()
 	{
+		glfwSwapBuffers(GWindow(this));
+		glfwPollEvents();
 		if (pm_ShouldClose)
 		{
 			parent()->Remove(this);

@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <vendor/entt.hpp>
 #include <memory_resource>
+#include <memory>
 #define zxIteratorFunctions(innerCollection)									\
 	[[nodiscard]] auto begin() { return innerCollection.begin(); }				\
 	[[nodiscard]] auto end() { return innerCollection.end(); }					\
@@ -24,6 +25,10 @@ namespace zx
 	template<typename T>
 	using vector = std::pmr::vector<T>;
 
+	template<typename T>
+	using managed = std::shared_ptr<T>;
+	template<typename T>
+	using owner = std::unique_ptr<T>;
 
 	namespace detail
 	{

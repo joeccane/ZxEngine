@@ -7,7 +7,7 @@
 #include "scene/ecs.hpp"
 #include "time.hpp"
 #include "system.hpp"
-#include "KeyStack.h"
+#include "KeyStack.hpp"
 #include "window.hpp"
 namespace zx
 {
@@ -26,12 +26,12 @@ namespace zx
 			pm_Scenes[name.data()] = result;
 			return result;
 		}
-
 		template<std::derived_from<window> T>
-		[[nodiscard]] T* CreateWindow()
+		[[nodiscard]] managed<T> CreateWindow(const WindowOptions& options = WindowOptions())
 		{
-			T* result = new T();
-			const T* cResult = static_cast<const T*>(result);
+			managed<T> result(new T());
+
+			const T* cResult = static_cast<const T*>(result.get());
 			auto _discard1 = result->onSystemInit << [&, result, cResult](SystemConstructEventData& data)
 			{
 				if (pm_KeyStack.Empty(cResult->stackKey()))
@@ -49,7 +49,7 @@ namespace zx
 				if (data.appBlocking)
 					pm_KeyStack.Pop(appBlockStackKey);
 			};
-			Add(result);
+			Add(result.get());
 			return result;
 		}
 #define ZX__CallSceneFunc(name)\

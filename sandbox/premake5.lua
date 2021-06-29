@@ -21,6 +21,8 @@ project "sandbox"
 		"%{wks.location}/zxengine-core/vendor/glm",
 		"%{wks.location}/zxengine-core/vendor",
 		"%{wks.location}/zxengine-core/vendor/vendor/glm",
+
+		"%{wks.location}/zxengine-core/vendor/vendor/glad/include",
 	}
 	links{
 		"zxengine-core"

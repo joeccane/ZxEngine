@@ -34,7 +34,7 @@ namespace zx
 	{
 		MouseButtonEventData() = default;
 		[[nodiscard]] inline MouseButtonEventData(mousebutton b) noexcept 
-			: button(b) {}
+			: button(b), action(buttonAction::none) {}
 		mousebutton button;
 		buttonAction action;
 	};

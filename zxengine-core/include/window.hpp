@@ -5,7 +5,7 @@
 #include "event.hpp"
 #include "input_events.hpp"
 #include "common_events.hpp"
-
+#include "math.hpp"
 namespace zx
 {
 	namespace layers
@@ -14,10 +14,16 @@ namespace zx
 	}
 	class window;
 	using WindowFocusEventData = OnFocusEventData<window>;
-	
+	struct WindowOptions
+	{
+		std::string title = "ZxEngine Window";
+		size2 size = { 640, 480 };
+		bool fullscreen = false;
+	};
 	class window : public iSystem
 	{
 	public:
+
 		inline window() noexcept
 			: iSystem(layers::window), pm_NativeWindow(nullptr), pm_ShouldClose(false) {}
 
@@ -34,7 +40,8 @@ namespace zx
 		[[nodiscard]] inline auto& onFocus() noexcept { return pm_OnFocusEvent.event; }
 		[[nodiscard]] inline auto& onDispose() noexcept { return pm_OnDisposeEvent.event; }
 		[[nodiscard]] inline auto& onScroll() noexcept { return pm_ScrollEvent.event; }
-		
+
+		const WindowOptions& options() { return pm_Options; }
 	protected:
 		KeyEvent pm_KeyEvent;
 		KeyPressedEventQueue pm_KeyPressedEvent;
@@ -57,7 +64,11 @@ namespace zx
 
 		vector2 pm_PrevMousePos;
 
+		WindowOptions pm_Options;
 		friend class application;
+	
+		
 	};
+
 
 }

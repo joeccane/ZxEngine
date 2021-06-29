@@ -29,7 +29,10 @@ project "zxengine-core"
 		"vendor/vendor/glm/vendor/**.hpp",
 		"vendor/vendor/glm/vendor/**.c",
 		"vendor/vendor/glm/vendor/**.cpp",
-		"vendor/vendor/glm/vendor/**.inl"
+		"vendor/vendor/glm/vendor/**.inl",
+
+		"vendor/vendor/glad/include/**.h",
+		"vendor/vendor/glad/src/**.cpp"
 
 	}
 	includedirs{
@@ -37,10 +40,11 @@ project "zxengine-core"
 		"include",
 		"vendor",
 		"vendor/vendor/glm",
-		"%{wks.location}/glfw/include"
+		"%{wks.location}/glfw/include",
+		"vendor/vendor/glad/include"
 	}
 	links{
-		"glfw"
+		"glfw", "opengl32"
 	}
 	filter "system:windows"
 		systemversion "latest"

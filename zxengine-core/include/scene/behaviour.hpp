@@ -1,9 +1,11 @@
 #pragma once
+#include "core.hpp"
 #include "ecs.hpp"
 #include <functional>
 namespace zx
 {
-	class optimize_behaviour{};
+
+	zxDefineAttribute(optimize_behaviour);
 
 	template<typename Parent, component_type ...Coms>
 	class behaviour
@@ -19,7 +21,7 @@ namespace zx
 		{
 			return [&]()
 			{
-				if constexpr (std::derived_from<Parent, zx::optimize_behaviour>)
+				if constexpr (optimize_behaviour_type<Parent>)
 				{
 					auto group = reg.group<>(entt::get<Coms...>);
 					for (auto e : group)
